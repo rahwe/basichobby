@@ -25,25 +25,28 @@
                                     @if (file_exists('img/hobbies/'.$hobby->id.'_thumb.jpg'))
                                     <a title="Show Details" href="/hobbies/{{ $hobby->id }}">
                                         <img src="/img/hobbies/{{ $hobby->id }}_thumb.jpg" alt="thumb">
-                                        {{ $hobby->title }}
                                     </a>
                                     @endif
-                                    
-                                    @auth
+                                    <a href="/hobbies/{{ $hobby->id }}">{{ $hobby->title }}</a>
+                                    @can('update', $hobby)
                                     <a class="btn btn-sm btn-light ml-5" href="/hobbies/{{ $hobby->id }}/edit"><i class="fas fa-edit"></i> Edit Hobby</a>
-                                    @endauth
+                                    @endcan
 
                                     <span class="mx-2">Posted by: <a href="/user/{{ $hobby->user->id }}">{{ $hobby->user->name }} ({{ $hobby->user->hobbies->count() }} Hobbies)</a>
-                                        <a href="/user/{{ $hobby->user->id }}"><img class="rounded" src="/img/thumb_portrait.jpg"></a>
+                                        <a href="user/{{ $hobby->user->id }}">
+                                        @if(file_exists('img/users/'.$hobby->user->id.'_thumb.jpg'))
+                                            <img class="rounded" src="img/users/{{ $hobby->user->id }}_thumb.jpg"></a>
+                                        @endif
+
                                     </span>
 
-                                    @auth
+                                    @can('delete', $hobby)
                                     <form class="float-right" style="display: inline" action="/hobbies/{{ $hobby->id }}" method="post">
                                         @csrf
                                         @method("DELETE")
                                         <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete">
                                     </form>
-                                    @endauth
+                                    @endcan
 
                                     <span class="float-right mx-2">{{ $hobby->created_at->diffForHumans() }}</span>
                                     <br>

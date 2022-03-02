@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 
+use Intervention\Image\Facades\Image;
+
+use Illuminate\Support\Facades\Session;
+
+
 class UserController extends Controller
 {
 
@@ -65,6 +70,12 @@ class UserController extends Controller
     public function edit(User $user)
     {
         abort_unless(Gate::allows('update', $user), 403, "You are not allowed");
+
+        return view('users.edit')->with([
+            'user' => $user,
+            'message_success' => Session::get('message_success'),
+            'message_warning' => Session::get('message_warning')
+        ]);
     }
 
     /**
@@ -77,6 +88,26 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         abort_unless(Gate::allows('update', $user), 403, "You are not allowed");
+
+            $request->validate([
+                'motto' => 'required|min:5',
+                'image' => 'mimes:png,jpg,bmp,jpg,gif'
+            ]);
+
+            if($request->image){
+                $this->saveImage($request->image, $user->id);
+            }
+
+            $user->update([
+                'motto' => $request['motto'],
+                'about_me' => $request['about_me'],
+            ]);
+
+            return redirect('/home')->with([
+                'message_success' => "The user profile was updated."
+            ]);
+
+            
     }
 
     /**
@@ -88,6 +119,64 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         abort_unless(Gate::allows('delete', $user), 403, "You are not allowed");
-        //
+        
     }
-}
+
+
+
+    public function saveImage($imageInput, $user_id){
+
+        $image = Image::make($imageInput);
+
+        if($image->width() > $image->height()){
+            
+            /// landscape
+            $image->widen(500)
+            ->save(public_path()."/img/users/".$user_id."_large.jpg")
+            ->widen(300)->pixelate(12)
+            ->save(public_path()."/img/users/".$user_id."_pixelated.jpg");
+
+            $image = Image::make($imageInput);
+            $image->widen(60)
+            ->save(public_path()."/img/users/".$user_id."_thumb.jpg");
+
+
+        }else{
+
+            // portrait
+            $image->heighten(500)
+            ->save(public_path()."/img/users/".$user_id."_large.jpg")
+            ->heighten(300)->pixelate(12)
+            ->save(public_path()."/img/users/".$user_id."_pixelated.jpg");
+
+            $image = Image::make($imageInput);
+            $image->heighten(60)
+            ->save(public_path()."/img/users/".$user_id."_thumb.jpg");
+
+
+        }
+    }
+
+
+    public function deleteImage($user_id){
+
+        if(file_exists(public_path()."/img/users/".$user_id."_large.jpg"))
+        unlink(public_path()."/img/users/".$user_id."_large.jpg");
+
+        if(file_exists(public_path()."/img/users/".$user_id."_thumb.jpg"))
+        unlink(public_path()."/img/users/".$user_id."_thumb.jpg");
+
+        if(file_exists(public_path()."/img/users/".$user_id."_pixelated.jpg"))
+        unlink(public_path()."/img/users/".$user_id."_pixelated.jpg");
+        
+        return redirect('/user')->with([
+            'message_success' => "The image was deleted."
+        ]);
+
+    }
+
+
+
+
+
+}// end user class

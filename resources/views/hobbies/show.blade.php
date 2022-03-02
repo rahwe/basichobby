@@ -38,19 +38,15 @@
                             </div>
 
                             <div class="col-md-3">
+                                
                                 @if (Auth::user() && file_exists('img/hobbies/'.$hobby->id.'_large.jpg'))
                                 <a href="/img/hobbies/{{ $hobby->id }}_large.jpg" data-lightbox="/img/hobbies/{{ $hobby->id }}_large.jpg" data-title="{{ $hobby->title }}">
-
                                     <img class="img-fluid" src="/img/hobbies/{{ $hobby->id }}_large.jpg" alt="">
-                                    
                                 </a>
                                 @endif
 
                                 @if (!Auth::user() && file_exists('img/hobbies/'.$hobby->id.'_pixelated.jpg'))
-                                
                                     <img class="img-fluid" src="/img/hobbies/{{ $hobby->id }}_pixelated.jpg" alt="">
-                                    
-                               
                                 @endif
 
                                 <i class="fa fa-search-plus"></i> Click image to enlarge

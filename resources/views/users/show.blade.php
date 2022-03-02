@@ -13,23 +13,30 @@
                                 <b>My Motto:<br>{{$user->motto}}</b>
                                 <p class="mt-2"><b>About me:</b><br>{{$user->about_me}}</p>
 
+                            
                                 <h5>Hobbies of {{ $user->name }}</h5>
                                 <ul class="list-group">
                                     @if($user->hobbies->count() > 0)
                                         @foreach($user->hobbies as $hobby)
+
                                             <li class="list-group-item">
                                                 @if (file_exists('img/hobbies/'.$hobby->id.'_thumb.jpg'))
                                                 <a title="Show Details" href="/hobbies/{{ $hobby->id }}">
                                                     <img src="/img/hobbies/{{ $hobby->id }}_thumb.jpg" alt="thumb">
-                                                    {{ $hobby->title }}
+                                                    
                                                 </a>
                                                 @endif
+
+                                                <a href="/hobbies/{{ $hobby->id }}">{{ $hobby->title }}</a>
                                                 <span class="float-right mx-2">{{ $hobby->created_at->diffForHumans() }}</span>
                                                 <br>
+
                                                 @foreach($hobby->tags as $tag)
                                                     <a href="/hobby/tag/{{ $tag->id }}"><span class="badge badge-success">{{ $tag->name }}</span></a>
                                                 @endforeach
+
                                             </li>
+                                            
                                         @endforeach
                                 </ul>
                                 @else
@@ -39,7 +46,15 @@
                                 @endif
                             </div>
                             <div class="col-md-3">
-                                <img class="img-thumbnail" src="/img/300x400.jpg" alt="{{ $user->name }}">
+                               
+
+                                @if (Auth::user() && file_exists('img/users/'.$hobby->user->id.'_large.jpg'))
+                                    <img class="img-fluid" src="/img/users/{{ $hobby->user->id }}_large.jpg" alt="{{ $hobby->user->name }}">
+                                @endif
+
+                                @if (!Auth::user() && file_exists('img/users/'.$hobby->user->id.'_pixelated.jpg'))
+                                    <img class="img-fluid" src="/img/users/{{ $hobby->user->id }}_pixelated.jpg" alt="{{ $hobby->user->name }}">         
+                                @endif
                             </div>
                         </div>
 

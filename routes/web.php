@@ -38,3 +38,6 @@ Route::get('/hobby/{hobby_id}/tag/{tag_id}/detach', 'hobbyTagController@detachTa
 
 // delete images of hobby 
 Route::get('/delete-images/hobby/{hobby_id}', 'HobbyController@deleteImage');
+
+// delete images of User 
+Route::get('/delete-images/user/{user_id}', 'UserController@deleteImage');

@@ -5,25 +5,40 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header"></div>
                 @auth
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-9">
+                            
                             <h2>Hello {{ auth()->user()->name }}</h2>
-
+                            
                             <h5>Your Motto {{ auth()->user()->about_me }}</h5>
 
-                            <p><p>{{ auth()->user()->motto ?? '' }}</p></p>
+                            <p>{{ auth()->user()->motto ?? '' }}</p>
 
                             <h5>Your "About Me" -Text</h5>
 
-                            <p><p>{{ auth()->user()->about_me ?? '' }}</p></p>
+                            <p>{{ auth()->user()->about_me ?? '' }}</p>
+
+                            <a href="/user/{{ auth()->user()->id }}/edit" class="btn btn-outline-primary">Edit My Profile</a>
+                            
 
                         </div>
                         <div class="col-md-3">
-                            <img class="img-thumbnail" src="/img/300x400.jpg" alt="">
+                            
+                            @if (Auth::user() && file_exists('img/users/'.auth()->user()->id.'_large.jpg'))
+                                <img class="img-fluid" src="/img/users/{{ auth()->user()->id }}_large.jpg" alt="">
+                            @endif
+
+                            @if (!Auth::user() && file_exists('img/users/'.auth()->user()->id.'_pixelated.jpg'))
+                                <img class="img-fluid" src="/img/users/{{ auth()->user()->id }}_pixelated.jpg" alt="">
+                            @endif
                         </div>
+
+                        
+
+
                     </div>
 
 
@@ -41,9 +56,10 @@
                                 @if (file_exists('img/hobbies/'.$hobby->id.'_thumb.jpg'))
                                     <a title="Show Details" href="/hobbies/{{ $hobby->id }}">
                                         <img src="/img/hobbies/{{ $hobby->id }}_thumb.jpg" alt="thumb">
-                                        {{ $hobby->title }}
+                                       
                                     </a>
                                 @endif
+                                <a href="/hobbies/{{ $hobby->id }}">{{ $hobby->title }}</a>
                                 @auth
                                     <a class="btn btn-sm btn-light ml-2" href="/hobbies/{{ $hobby->id }}/edit"><i class="fas fa-edit"></i> Edit Hobby</a>
                                 @endauth
