@@ -169,7 +169,7 @@ class UserController extends Controller
         if(file_exists(public_path()."/img/users/".$user_id."_pixelated.jpg"))
         unlink(public_path()."/img/users/".$user_id."_pixelated.jpg");
         
-        return redirect('/user')->with([
+        return redirect()->back()->with([
             'message_success' => "The image was deleted."
         ]);
 
