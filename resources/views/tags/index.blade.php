@@ -19,6 +19,10 @@
 
                                 <a href="/hobby/tag/{{ $tag->id }}" class="float-right">Use {{ $tag->hobbies->count() }} time</a>
 
+                                @can('update', $tag)
+                                    <a href="tags/{{ $tag->id }}/edit" class="btn btn-outline-warning btn-sm">Edit</a>
+                                @endcan
+
 
                                 @can('delete', $tag)
                                     <form action="/tags/{{ $tag->id }}" method="post">
@@ -28,20 +32,19 @@
                                     </form>
                                 @endcan
                                 
-                                
                             </li>
-                            
-                            @endforeach
 
-                            
+                            @endforeach
 
                         @endif
                         
                       </ul>
+                      
 
-                        @can('create', $tag)
-                            <a href="tags/create" class="btn btn-link">add tags</a>
-                        @endcan
+                    @can('create', $tag)
+                        <a href="tags/create" class="btn btn-primary mt-3">Add tags</a>
+                    @endcan
+                      
                 </div>
             </div>
         </div>

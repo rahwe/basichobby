@@ -32,8 +32,10 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Tag $tag)
     {
+       
+        abort_unless(Gate::allows('create', $tag), 403, "You are not allowed");
         return view('tags.create');
     }
 
@@ -43,8 +45,12 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Tag $tag)
     {
+
+   
+        abort_unless(Gate::allows('create', $tag), 403, "You are not allowed");
+
         $request->validate([
             'name' => 'required|max:50|unique:tags',
         ]);
@@ -56,6 +62,30 @@ class TagController extends Controller
         $hobby->save();
         return redirect('/tags')->with([
             'message_success' => "The tag ".$hobby->name."was created!"
+        ]);
+    }
+
+
+    public function edit(Tag $tag){
+        abort_unless(Gate::allows('update', $tag), 403);
+        return view('tags.edit', [
+            'tag' => $tag
+        ]);
+    }
+
+    public function update(Request $request, Tag $tag){
+        abort_unless(Gate::allows('update', $tag), 403);
+
+        $request->validate([
+            'name' => 'required|max:50|unique:tags',
+        ]);
+
+        $tag->update([
+            'name' => $request['name']
+        ]);
+
+        return redirect('/tags')->with([
+            'message_success' => "The tag is updated"
         ]);
     }
 
